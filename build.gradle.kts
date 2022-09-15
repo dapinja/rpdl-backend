@@ -27,7 +27,6 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation:2.1.1")
     
     implementation("dev.reeve:TorrustApiWrapper:latest")
-	implementation(kotlin("script-runtime"))
 	
 	testImplementation(kotlin("test"))
 }

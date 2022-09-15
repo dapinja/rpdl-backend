@@ -1,3 +1,3 @@
 
-rootProject.name = "rpdlBackend"
+rootProject.name = "rpdl-backend"
 
