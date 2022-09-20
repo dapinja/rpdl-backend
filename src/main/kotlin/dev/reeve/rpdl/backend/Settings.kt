@@ -1,8 +1,7 @@
-import com.google.gson.FieldNamingPolicy
-import com.google.gson.GsonBuilder
-import f95.F95ZoneGrabber
-import rpdl.RpdlGrabber
-import java.io.File
+package dev.reeve.rpdl.backend
+
+import dev.reeve.rpdl.backend.f95.F95ZoneGrabber
+import dev.reeve.rpdl.backend.rpdl.RpdlGrabber
 
 object Settings {
 	const val databasePath = "./data/info.db"

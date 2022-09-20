@@ -1,3 +1,5 @@
+package dev.reeve.rpdl.backend
+
 object Caches {
 	val categoryCache = Cache {
 		Settings.databaseManager.getCategories().associateBy {

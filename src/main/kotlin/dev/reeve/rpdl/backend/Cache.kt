@@ -1,3 +1,5 @@
+package dev.reeve.rpdl.backend
+
 class Cache<T : Any>(private val block: () -> T) {
 	private var cacheValue: T? = null
 	

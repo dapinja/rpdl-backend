@@ -1,13 +1,15 @@
-package rpdl
+package dev.reeve.rpdl.backend.api
 
-import Caches
-import Settings
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import dev.reeve.rpdl.backend.Caches
+import dev.reeve.rpdl.backend.rpdl.Category
+import dev.reeve.rpdl.backend.rpdl.GameInstance
+import dev.reeve.rpdl.backend.rpdl.Uploader
 import java.sql.ResultSet
 
-data class GameInstance(
-	var id: Int?,
+class ExtendedInstance(
+	val id: Int?,
 	val threadID: Int?,
 	val title: String,
 	val version: String?,
@@ -16,8 +18,12 @@ data class GameInstance(
 	val torrentID: Long,
 	val uploadedDate: Long,
 	val uploader: Uploader,
-	val links: HashMap<String, String>?
+	val links: HashMap<String, String>?,
+	val tags: List<String>,
+	val rating: Double,
+	val description: String,
 ) {
+	
 	constructor(result: ResultSet) : this(
 		result.getInt("id"),
 		result.getInt("threadID").let {
@@ -40,22 +46,11 @@ data class GameInstance(
 		}!!,
 		result.getString("links").let {
 			return@let Gson().fromJson(it, TypeToken.getParameterized(HashMap::class.java, String::class.java, String::class.java).type)
-		}
+		},
+		result.getString("tags").let {
+			return@let Gson().fromJson(it, TypeToken.getParameterized(ArrayList::class.java, String::class.java).type)
+		},
+		result.getString("rating").toDouble(),
+		result.getString("description")
 	)
-	
-	override fun toString(): String {
-		return "${if (id != null) "$id, " else ""}${threadID ?: -1}, '$title', '$version', '$fileSize', ${category.id}, '$torrentID', '$uploadedDate', ${uploader.id}, '${
-			Gson().toJson(
-				links
-			)
-		}'"
-	}
-	
-	fun update(): String {
-		return "threadID = $threadID, title = '$title', version = '$version', fileSize = '$fileSize', categoryID = ${category.id}, torrentID = '$torrentID', uploadDate = '$uploadedDate', uploaderID = ${uploader.id}, links = '${
-			Gson().toJson(
-				links
-			)
-		}'"
-	}
 }

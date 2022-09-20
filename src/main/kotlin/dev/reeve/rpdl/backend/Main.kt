@@ -1,5 +1,8 @@
-import api.CheckGame
+package dev.reeve.rpdl.backend
+
 import com.google.gson.FieldNamingPolicy
+import dev.reeve.rpdl.backend.api.CheckGame
+import dev.reeve.rpdl.backend.api.SearchQuery
 import io.ktor.http.*
 import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
@@ -22,15 +25,14 @@ fun main(args: Array<String>): Unit = runBlocking {
 					setPrettyPrinting()
 				}
 			}
+			
 			routing {
 				post("/checkForUpdates") {
 					val checkGames = call.receive<List<CheckGame>>().toMutableList()
 					
-					println(checkGames)
-					
 					try {
 						val response = checkGames.mapNotNull {
-							val res = CheckGame(it.id, Settings.databaseManager.getGameInstance(it.id)!!.torrentID)
+							val res = CheckGame(it.id, Settings.databaseManager.getGameInstance(it.id)!!.torrentId)
 							
 							return@mapNotNull if (res.torrentId != it.torrentId) {
 								res
@@ -45,8 +47,14 @@ fun main(args: Array<String>): Unit = runBlocking {
 					} catch (_: NullPointerException) {
 						call.respondText("Game not found", status = HttpStatusCode.NotFound)
 					}
-					
 				}
+				
+				get("/searchGames") {
+					val searchQuery = call.receive<SearchQuery>()
+					
+					call.respond(Settings.databaseManager.search(searchQuery))
+				}
+				
 				get("/getF95Info") {
 					val game = call.request.queryParameters["game"]?.toIntOrNull() ?: return@get call.respondText("Game arg not found", status = HttpStatusCode.NotFound)
 					

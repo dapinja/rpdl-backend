@@ -1,7 +1,7 @@
-package rpdl
+package dev.reeve.rpdl.backend.rpdl
 
-import Caches
-import Settings
+import dev.reeve.rpdl.backend.Caches
+import dev.reeve.rpdl.backend.Settings
 import com.google.gson.Gson
 import dev.reeve.torrustapi.Torrust
 import kotlinx.coroutines.runBlocking
@@ -63,7 +63,7 @@ class RpdlGrabber {
 					}
 					
 					val copy = games.filter {
-						it.value.torrentID == webListing.torrentId
+						it.value.torrentId == webListing.torrentId
 					}
 					
 					if (copy.isNotEmpty()) {
@@ -77,11 +77,11 @@ class RpdlGrabber {
 					
 					val time = measureTimeMillis {
 						result = games.filter { (id, gameInstance) ->
-							if (found.containsKey(descriptionInfo.first) && found[descriptionInfo.first]!!.contains(gameInstance.torrentID)) {
+							if (found.containsKey(descriptionInfo.first) && found[descriptionInfo.first]!!.contains(gameInstance.torrentId)) {
 								return@filter false
 							}
 							
-							val res = torrust.getWebListing(gameInstance.torrentID)
+							val res = torrust.getWebListing(gameInstance.torrentId)
 							
 							if (res != null) {
 								found.getOrPut(descriptionInfo.first) { HashSet() }.add(res.torrentId)
@@ -143,7 +143,7 @@ class RpdlGrabber {
 							descriptionInfo.second // links
 						)
 					} else {
-						println("Add ${result.first().title} with torrentID ${webListing.torrentId}")
+						println("Add ${webListing.title} with torrentID ${webListing.torrentId}")
 						GameInstance(
 							null, // don't have an ID assigned yet
 							descriptionInfo.first, // threadID
@@ -192,7 +192,7 @@ class RpdlGrabber {
 	// Moved to client so that they don't have to send auth info
 	/*
 	fun getMagnetLink(torrentID: Long): String {
-			val url = "${Settings.Url.rpdlURL}torrent/$torrentID"
+			val url = "${dev.reeve.rpdl.backend.api.Settings.Url.rpdlURL}torrent/$torrentID"
 			
 			val request = Request.Builder()
 				.url(url)
@@ -201,7 +201,7 @@ class RpdlGrabber {
 			client.newCall(request).execute().use {
 				val response = it.body!!.string()
 				
-				val results = Settings.RegExp.link.findAll(response)
+				val results = dev.reeve.rpdl.backend.api.Settings.RegExp.link.findAll(response)
 				
 				return results.last().groupValues[1]
 			}

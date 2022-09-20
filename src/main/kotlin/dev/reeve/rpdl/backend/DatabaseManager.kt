@@ -1,12 +1,16 @@
+package dev.reeve.rpdl.backend
+
 import com.google.gson.Gson
-import f95.F95Info
-import rpdl.Category
-import rpdl.GameInstance
-import rpdl.Uploader
+import dev.reeve.rpdl.backend.api.ExtendedInstance
+import dev.reeve.rpdl.backend.api.SearchQuery
+import dev.reeve.rpdl.backend.f95.F95Info
+import dev.reeve.rpdl.backend.rpdl.Category
+import dev.reeve.rpdl.backend.rpdl.GameInstance
+import dev.reeve.rpdl.backend.rpdl.Uploader
 import java.io.Closeable
 import java.sql.DriverManager
 import java.sql.Statement
-import java.util.Date
+import java.util.*
 
 class DatabaseManager : Closeable {
 	private val connection = DriverManager.getConnection("jdbc:sqlite:${Settings.databasePath}")
@@ -19,6 +23,99 @@ class DatabaseManager : Closeable {
 		statement.close()
 	}
 	
+	fun search(searchQuery: SearchQuery): MutableList<ExtendedInstance> {
+		val andTagsString = buildString {
+			if (searchQuery.andTags.isNotEmpty()) {
+				append(" (")
+				for (tag in searchQuery.andTags) {
+					append("tags LIKE '%${tag}%' AND ")
+				}
+				delete(length - 4, length)
+				append(")")
+			}
+		}
+		val orTagsString = buildString {
+			if (searchQuery.orTags.isNotEmpty()) {
+				if (andTagsString.isNotEmpty()) {
+					append(" AND")
+				}
+				append(" (")
+				for (tag in searchQuery.orTags) {
+					append("tags LIKE '%${tag}%' OR ")
+				}
+				delete(length - 3, length)
+				append(")")
+			}
+		}
+		val notTagsString = buildString {
+			if (searchQuery.notTags.isNotEmpty()) {
+				if (orTagsString.isNotEmpty() || andTagsString.isNotEmpty()) {
+					append(" AND")
+				}
+				append(" (")
+				for (tag in searchQuery.notTags) {
+					append("tags NOT LIKE '%${tag}%' AND ")
+				}
+				delete(length - 4, length)
+				append(")")
+			}
+		}
+		val searchTermString = buildString {
+			if (searchQuery.query.isNotEmpty()) {
+				append(" (")
+				append("title LIKE '%${searchQuery.query}%' OR ")
+				append("description LIKE '%${searchQuery.query}%'")
+				append(")")
+			}
+		}
+		val engineString = buildString {
+			if (searchQuery.engine.isNotEmpty()) {
+				if (searchTermString.isNotEmpty()) {
+					append(" AND")
+				}
+				append(" (")
+				append("categoryID = ${getCategories().find { it.name.lowercase() == searchQuery.engine }}")
+				append(")")
+			}
+		}
+		
+		val query = buildString {
+			append("SELECT ")
+			append("rpdl.id as id, threadID, title, version, fileSize, categoryID, torrentID, uploadDate, uploaderID, links, tags, rating, description")
+			append(" FROM rpdlInstances rpdl JOIN (")
+			append("SELECT * FROM f95zone")
+			if (searchQuery.andTags.isNotEmpty() || searchQuery.orTags.isNotEmpty() || searchQuery.notTags.isNotEmpty()) {
+				append(" WHERE")
+				append(andTagsString)
+				append(orTagsString)
+				append(notTagsString)
+			}
+			append(") f95 ON rpdl.threadID = f95.id")
+			if (searchQuery.query.isNotEmpty() || searchQuery.engine.isNotEmpty()) {
+				append(" WHERE")
+				append(searchTermString)
+				append("")
+			}
+			append(" ORDER BY uploadDate DESC")
+		}
+		
+		val statement = connection.createStatement()
+		val result = statement.executeQuery(query)
+		
+		Caches.uploaderCache.getAndSet()
+		Caches.categoryCache.getAndSet()
+		
+		val list = mutableListOf<ExtendedInstance>()
+		while (result.next()) {
+			list.add(ExtendedInstance(result))
+		}
+		
+		Caches.uploaderCache.clear()
+		Caches.categoryCache.clear()
+		
+		return list
+	}
+	
 	fun getF95Info(thread: Int): F95Info? {
 		val statement = connection.createStatement()
 		val result = statement.executeQuery("SELECT * FROM f95zone WHERE id = $thread")
@@ -26,7 +123,7 @@ class DatabaseManager : Closeable {
 			return F95Info(
 				result.getInt("id"),
 				Gson().fromJson(result.getString("tags"), Array<String>::class.java).toList(),
-				result.getString("rating").toDoubleOrNull(),
+				result.getString("rating").toDouble(),
 				result.getString("description")
 			)
 		}
@@ -43,7 +140,7 @@ class DatabaseManager : Closeable {
 		return null
 	}
 	
-	fun getGameInstance(torrentID: Long): GameInstance? {
+	private fun getGameInstance(torrentID: Long): GameInstance? {
 		val statement = connection.createStatement()
 		val result = statement.executeQuery("SELECT * FROM rpdlInstances WHERE torrentID = $torrentID")
 		if (result.next()) {
@@ -153,11 +250,12 @@ class DatabaseManager : Closeable {
 	
 	fun putF95Info(info: F95Info) {
 		val statement = connection.createStatement()
-		val str = "INSERT INTO f95zone " + "VALUES (${info.threadID}, '${Gson().toJson(info.tags)}', ${if (info.rating == null) null else "${info.rating}"}, '${info.description}') " + "ON CONFLICT(id) " + "DO UPDATE SET tags = '${
-			Gson().toJson(
-				info.tags
-			)
-		}', rating = ${if (info.rating == null) null else "${info.rating}"}, description = '${info.description}'"
+		val str =
+			"INSERT INTO f95zone " + "VALUES (${info.threadID}, '${Gson().toJson(info.tags)}', ${if (info.rating == null) null else "${info.rating}"}, '${info.description}') " + "ON CONFLICT(id) " + "DO UPDATE SET tags = '${
+				Gson().toJson(
+					info.tags
+				)
+			}', rating = ${if (info.rating == null) null else "${info.rating}"}, description = '${info.description}'"
 		statement.execute(
 			str
 		)
@@ -185,7 +283,7 @@ class DatabaseManager : Closeable {
 	}
 	
 	fun putGameInstance(instance: GameInstance): Int? {
-		if (instance.id == null && getGameInstance(instance.torrentID) == null) {
+		if (instance.id == null && getGameInstance(instance.torrentId) == null) {
 			val transaction = connection.prepareStatement(
 				"INSERT INTO rpdlInstances (threadID, title, version, fileSize, categoryID, torrentID, uploadDate, uploaderID, links) VALUES ($instance)",
 				Statement.RETURN_GENERATED_KEYS

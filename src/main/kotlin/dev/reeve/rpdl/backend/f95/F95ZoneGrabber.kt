@@ -1,11 +1,8 @@
-package f95
+package dev.reeve.rpdl.backend.f95
 
-import Settings
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
+import dev.reeve.rpdl.backend.Settings
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.io.File
 import java.net.SocketTimeoutException
 
 class F95ZoneGrabber {
@@ -38,7 +35,7 @@ class F95ZoneGrabber {
 					return F95Info(threadID,
 						Settings.RegExp.tags.findAll(result).map { it.groupValues[2] }.toList(),
 						rating.toDoubleOrNull() ?: error("hmm"),
-						desc?.get(1)?.let {
+						desc?.get(1)!!.let {
 							it.replaceFirst(":", "").replace("<b>", "").replace("</b>", "").replace("<br>", "").replace("<i>", "")
 								.replace("</i>", "").replace("'","").trimStart().trimEnd()
 						}).also {
