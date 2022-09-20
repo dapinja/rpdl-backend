@@ -4,18 +4,17 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dev.reeve.rpdl.backend.Caches
 import dev.reeve.rpdl.backend.rpdl.Category
-import dev.reeve.rpdl.backend.rpdl.GameInstance
 import dev.reeve.rpdl.backend.rpdl.Uploader
 import java.sql.ResultSet
 
 class ExtendedInstance(
 	val id: Int?,
-	val threadID: Int?,
+	val threadId: Int?,
 	val title: String,
 	val version: String?,
 	val fileSize: Long,
 	val category: Category,
-	val torrentID: Long,
+	val torrentId: Long,
 	val uploadedDate: Long,
 	val uploader: Uploader,
 	val links: HashMap<String, String>?,
