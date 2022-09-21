@@ -24,6 +24,8 @@ class DatabaseManager : Closeable {
 	}
 	
 	fun search(searchQuery: SearchQuery): MutableList<ExtendedInstance> {
+		searchQuery.serializeInputs()
+		
 		val andTagsString = buildString {
 			if (searchQuery.andTags.isNotEmpty()) {
 				append(" (")
