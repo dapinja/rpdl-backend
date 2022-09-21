@@ -13,7 +13,7 @@ class F95ZoneGrabber {
 		
 		if (inf == null || (update != null && !update.contains(threadID))) {
 			update?.add(threadID)
-		
+			
 			val url = "${Settings.Url.f95URL}threads/$threadID/"
 			
 			val request = Request.Builder().url(url).build()
@@ -35,10 +35,11 @@ class F95ZoneGrabber {
 					return F95Info(threadID,
 						Settings.RegExp.tags.findAll(result).map { it.groupValues[2] }.toList(),
 						rating.toDoubleOrNull() ?: error("hmm"),
-						desc?.get(1)!!.let {
+						(desc?.get(1)?.let {
 							it.replaceFirst(":", "").replace("<b>", "").replace("</b>", "").replace("<br>", "").replace("<i>", "")
-								.replace("</i>", "").replace("'","").trimStart().trimEnd()
-						}).also {
+								.replace("</i>", "").replace("'", "").trimStart().trimEnd()
+						}) ?: ""
+					).also {
 						Settings.databaseManager.putF95Info(it)
 					}
 				}
