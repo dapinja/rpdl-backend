@@ -76,7 +76,7 @@ class DatabaseManager : Closeable {
 					append(" AND")
 				}
 				append(" (")
-				append("categoryID = ${getCategories().find { it.name.lowercase() == searchQuery.engine }}")
+				append("categoryID = ${getCategories().find { it.name.lowercase() == searchQuery.engine }!!.id}")
 				append(")")
 			}
 		}
@@ -96,7 +96,7 @@ class DatabaseManager : Closeable {
 			if (searchQuery.query.isNotEmpty() || searchQuery.engine.isNotEmpty()) {
 				append(" WHERE")
 				append(searchTermString)
-				append("")
+				append(engineString)
 			}
 			append(" ORDER BY uploadDate DESC")
 		}
