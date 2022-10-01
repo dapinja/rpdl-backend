@@ -14,7 +14,7 @@ class RpdlGrabber {
 	private fun getCategories(): List<Category> {
 		return torrust.getCategories()?.map {
 			val search = torrust.getListings(categories = arrayOf(it.name), limit = 1)!!
-			Category(search.results.first().categoryId, it.name, it.numberOfTorrents)
+			Category(search.results.first().categoryId, it.name)
 		} ?: emptyList()
 	}
 	
@@ -35,9 +35,10 @@ class RpdlGrabber {
 		}.toMutableMap()
 		Caches.categoryCache.getAndSet()
 		
-		val lastCheck = Settings.databaseManager.getLastCheck()
+		/*val lastCheck = Settings.databaseManager.getLastCheck()*/
+		val lastCheck = Date(0)
 		
-		println(lastCheck)
+		println("Last check was $lastCheck")
 		
 		val updates = if (lastCheck.time != 0L) torrust.getNewWebListings(lastCheck)
 		else torrust.getNewWebListings(null)
@@ -180,12 +181,15 @@ class RpdlGrabber {
 			uploaders.forEach {
 				Settings.databaseManager.putUploader(it.value)
 			}
+			
+			Settings.databaseManager.putLastCheck(start)
+		} else {
+			println("No updates were found")
 		}
 		
 		Caches.uploaderCache.clear()
 		Caches.categoryCache.clear()
 		Caches.instanceCache.clear()
-		Settings.databaseManager.putLastCheck(start)
 		Settings.databaseManager.reindex()
 	}
 	

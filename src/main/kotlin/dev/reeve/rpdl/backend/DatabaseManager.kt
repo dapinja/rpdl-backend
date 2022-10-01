@@ -176,7 +176,7 @@ class DatabaseManager : Closeable {
 		val result = statement.executeQuery("SELECT * FROM categories WHERE id = $categoryID")
 		if (result.next()) {
 			return Category(
-				result.getInt("id"), result.getString("name"), result.getInt("numTorrents")
+				result.getInt("id"), result.getString("name")
 			)
 		}
 		return null
@@ -189,7 +189,7 @@ class DatabaseManager : Closeable {
 		while (result.next()) {
 			categories.add(
 				Category(
-					result.getInt("id"), result.getString("name"), result.getInt("numTorrents")
+					result.getInt("id"), result.getString("name")
 				)
 			)
 		}
@@ -265,7 +265,7 @@ class DatabaseManager : Closeable {
 	
 	fun putCategory(category: Category) {
 		val statement = connection.createStatement()
-		statement.execute("INSERT INTO categories VALUES (${category.id}, '${category.name}', ${category.numTorrents})")
+		statement.execute("INSERT INTO categories VALUES (${category.id}, '${category.name}')")
 	}
 	
 	fun putUploader(uploader: Uploader): Int? {

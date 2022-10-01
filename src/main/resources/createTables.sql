@@ -25,8 +25,7 @@ CREATE TABLE IF NOT EXISTS uploaders
 CREATE TABLE IF NOT EXISTS categories
 (
     id          INTEGER PRIMARY KEY,
-    name        TEXT    NOT NULL UNIQUE,
-    numTorrents INTEGER NOT NULL DEFAULT 0
+    name        TEXT    NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS f95zone
