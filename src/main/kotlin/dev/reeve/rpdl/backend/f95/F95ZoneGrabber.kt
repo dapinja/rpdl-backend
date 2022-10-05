@@ -11,8 +11,6 @@ class F95ZoneGrabber {
 	fun downloadPage(threadID: Int, update: HashSet<Int>? = null): F95Info? {
 		val inf = Settings.databaseManager.getF95Info(threadID)
 		
-		println(inf)
-		
 		if (inf == null || (update != null && !update.contains(threadID))) {
 			update?.add(threadID)
 			
@@ -33,9 +31,6 @@ class F95ZoneGrabber {
 					
 					val rating = Settings.RegExp.rating.find(result)?.groupValues?.get(1) ?: "0"
 					val desc = Settings.RegExp.description.find(result)?.groupValues
-					
-					println("Got rating: $rating")
-					println("Got desc: $desc")
 					
 					return F95Info(threadID,
 						Settings.RegExp.tags.findAll(result).map { it.groupValues[2] }.toList(),
