@@ -160,11 +160,11 @@ class RpdlGrabber {
 					}
 					
 					if (instance != null) {
+						Settings.f95.downloadPage(descriptionInfo.first, updateSet)
+						
 						Settings.databaseManager.putGameInstance(instance)
 						
 						instances[instance.id!!] = instance
-						
-						Settings.f95.downloadPage(descriptionInfo.first, updateSet)
 					}
 					
 					if (++done % 50 == 0) {
