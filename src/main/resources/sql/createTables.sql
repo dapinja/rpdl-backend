@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS rpdlInstances
 (
-    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    id         INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     threadID   INTEGER NOT NULL DEFAULT -1,
     title      TEXT    NOT NULL,
     version    TEXT,
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS rpdlInstances
 
 CREATE TABLE IF NOT EXISTS uploaders
 (
-    id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    id       INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY ,
     name     TEXT NOT NULL UNIQUE,
     lastSeen TEXT NOT NULL
 );
@@ -48,4 +48,4 @@ CREATE INDEX IF NOT EXISTS rpdlInstances_threadID ON rpdlInstances (threadID);
 CREATE INDEX IF NOT EXISTS rpdlInstances_categoryID ON rpdlInstances (categoryID);
 CREATE INDEX IF NOT EXISTS rpdlInstances_uploaderID ON rpdlInstances (uploaderID);
 
-REINDEX rpdlInstances_threadID;
+REINDEX INDEX rpdlInstances_threadID;
