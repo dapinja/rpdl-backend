@@ -6,7 +6,7 @@ services:
         ports:
             - "5671:5671"
         volumes:
-            - ./config.json:/app/config.json
+            - ./config:/app/config
         depends_on:
             - db
     db:

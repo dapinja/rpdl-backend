@@ -19,7 +19,7 @@ class DatabaseManager : Closeable {
 		DriverManager.registerDriver(Driver())
 	}
 	
-	private val configFile = File("config.json")
+	private val configFile = File("./config/config.json")
 	private val config = if (configFile.exists()) {
 		Gson().fromJson(File("config.json").readText(), Config::class.java)
 	} else {
