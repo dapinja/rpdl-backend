@@ -18,8 +18,8 @@ FROM openjdk:17-alpine
 
 RUN mkdir /app
 
-COPY --from=build /home/gradle/src/build/libs/*.jar /app/app.jar
+COPY --from=build /home/gradle/src/build/libs /app
 
 EXPOSE 5671
 
-CMD ["java", "-jar", "/app/app.jar"]
+CMD ["java", "-jar", "/app/rpdl-backend-1.0-SNAPSHOT-all.jar"]
