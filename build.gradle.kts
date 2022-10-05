@@ -25,14 +25,13 @@ dependencies {
     
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     
-    implementation("io.ktor:ktor-server-netty:2.1.1")
-    implementation("io.ktor:ktor-server-core:2.1.1")
+    implementation("io.ktor:ktor-server-netty:2.1.2")
+    implementation("io.ktor:ktor-server-core:2.1.2")
     implementation("io.ktor:ktor-gson:1.6.8")
-    implementation("io.ktor:ktor-serialization-gson:2.1.1")
-    implementation("io.ktor:ktor-server-content-negotiation:2.1.1")
+    implementation("io.ktor:ktor-serialization-gson:2.1.2")
+    implementation("io.ktor:ktor-server-content-negotiation:2.1.2")
     
     implementation("dev.reeve:TorrustApiWrapper:latest")
-    implementation("io.github.cdimascio:dotenv-kotlin:6.3.1")
     
     testImplementation(kotlin("test"))
 }
