@@ -13,7 +13,10 @@ import java.sql.Statement
 import java.util.*
 
 class DatabaseManager : Closeable {
-	private val connection = DriverManager.getConnection("jdbc:sqlite:${Settings.databasePath}")
+	private val connection = when (Settings.databaseType) {
+		Settings.DatabaseType.SQLITE -> DriverManager.getConnection("jdbc:sqlite:${Settings.databasePath}")
+		Settings.DatabaseType.POSTGRESQL -> DriverManager.getConnection("jdbc:postgresql://localhost:5672/", "postgres", "postgres")
+	}
 	
 	fun reindex() {
 		val statement = connection.createStatement()

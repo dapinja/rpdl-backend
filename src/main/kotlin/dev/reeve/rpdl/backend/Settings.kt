@@ -5,9 +5,15 @@ import dev.reeve.rpdl.backend.rpdl.RpdlGrabber
 
 object Settings {
 	const val databasePath = "./data/info.db"
+	val databaseType = DatabaseType.POSTGRESQL
 	val databaseManager = DatabaseManager()
 	val rpdl = RpdlGrabber()
 	val f95 = F95ZoneGrabber()
+	
+	enum class DatabaseType {
+		POSTGRESQL,
+		SQLITE
+	}
 	
 	object RegExp {
 		val tags = Regex("<a href=\"/tags/(?<tagURL>[^/]+)/\" class=\"tagItem\" dir=\"auto\">(?<tagDisplay>[^<]+)</a>")
