@@ -22,7 +22,7 @@ class DatabaseManager(private val config: Config) : Closeable {
 	
 	private val connection = when (Settings.databaseType) {
 		Settings.DatabaseType.SQLITE -> DriverManager.getConnection("jdbc:sqlite:${config.databasePath}")
-		Settings.DatabaseType.POSTGRESQL -> DriverManager.getConnection("jdbc:postgresql://${config.postgresAddress}:5672/", "postgres", "postgres")
+		Settings.DatabaseType.POSTGRESQL -> DriverManager.getConnection("jdbc:postgresql://${config.postgresAddress}:${config.port}/", "postgres", "postgres")
 	}
 	
 	fun reindex() {
