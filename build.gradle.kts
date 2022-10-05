@@ -14,6 +14,7 @@ project.setProperty("mainClassName", "dev.reeve.rpdl.backend.MainKt")
 repositories {
     mavenCentral()
     mavenLocal()
+    maven("https://repo.reeve.dev/repository/maven-releases/")
 }
 
 dependencies {
