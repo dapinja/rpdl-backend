@@ -22,4 +22,4 @@ COPY --from=build /home/gradle/src/build/libs/ /app/
 
 EXPOSE 5671
 
-CMD ["java", "-jar", "/app/rpdl-backend-1.0-SNAPSHOT-all.jar"]
+CMD ["ls", "/app", "&&", "java", "-jar", "/app/rpdl-backend-1.0-SNAPSHOT-all.jar"]
