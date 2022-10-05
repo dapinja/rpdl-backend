@@ -19,7 +19,7 @@ class DatabaseManager : Closeable {
 		DriverManager.registerDriver(Driver())
 	}
 	
-	private val dotenv = Dotenv.load()
+	private val dotenv = Dotenv.configure().directory("./").load()
 	
 	private val connection = when (Settings.databaseType) {
 		Settings.DatabaseType.SQLITE -> DriverManager.getConnection("jdbc:sqlite:${Settings.databasePath}")
