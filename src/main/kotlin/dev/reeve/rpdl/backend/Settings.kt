@@ -21,8 +21,12 @@ object Settings {
 	val databaseManager by lazy {
 		DatabaseManager(config)
 	}
-	val rpdl = RpdlGrabber()
-	val f95 = F95ZoneGrabber()
+	val rpdl by lazy {
+		RpdlGrabber()
+	}
+	val f95 by lazy {
+		F95ZoneGrabber()
+	}
 	
 	enum class DatabaseType {
 		POSTGRESQL,
