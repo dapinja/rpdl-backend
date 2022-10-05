@@ -5,6 +5,8 @@ services:
         build: .
         ports:
             - "5671:5671"
+        volumes:
+            - .env:/app/.env
         depends_on:
             - db
     db:
