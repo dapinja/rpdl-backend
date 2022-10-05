@@ -10,6 +10,8 @@ services:
             - "5671:5671"
         volumes:
             - .:/app
+        depends_on:
+            - db
     db:
         image: postgres
         ports:
