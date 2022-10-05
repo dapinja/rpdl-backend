@@ -27,8 +27,6 @@ class F95ZoneGrabber {
 					
 					val result = response.body!!.string().replace("&quot;", "\"")
 					
-					println("Got result, parsing...")
-					
 					val rating = Settings.RegExp.rating.find(result)?.groupValues?.get(1) ?: "0"
 					val desc = Settings.RegExp.description.find(result)?.groupValues
 					
