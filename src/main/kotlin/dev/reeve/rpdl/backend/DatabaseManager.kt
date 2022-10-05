@@ -15,19 +15,9 @@ import java.sql.DriverManager
 import java.sql.Statement
 import java.util.*
 
-class DatabaseManager : Closeable {
+class DatabaseManager(private val config: Config) : Closeable {
 	init {
 		DriverManager.registerDriver(Driver())
-	}
-	
-	private val configFile = File("./config/config.json")
-	private val config = if (configFile.exists()) {
-		Gson().fromJson(configFile.readText(), Config::class.java)
-	} else {
-		configFile.parentFile.mkdir()
-		Config().also {
-			configFile.writeText(GsonBuilder().setPrettyPrinting().create().toJson(it))
-		}
 	}
 	
 	private val connection = when (Settings.databaseType) {

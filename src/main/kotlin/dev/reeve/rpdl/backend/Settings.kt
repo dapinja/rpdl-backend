@@ -1,11 +1,26 @@
 package dev.reeve.rpdl.backend
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import dev.reeve.rpdl.backend.f95.F95ZoneGrabber
 import dev.reeve.rpdl.backend.rpdl.RpdlGrabber
+import java.io.File
 
 object Settings {
+	private val configDir = File("./config")
+	private val configFile = File(configDir,"config.json")
+	private val config = if (configDir.exists() && configFile.exists()) {
+		Gson().fromJson(configFile.readText(), Config::class.java)
+	} else {
+		configDir.mkdirs()
+		Config().also {
+			configFile.writeText(GsonBuilder().setPrettyPrinting().create().toJson(it))
+		}
+	}
 	val databaseType = DatabaseType.POSTGRESQL
-	val databaseManager = DatabaseManager()
+	val databaseManager by lazy {
+		DatabaseManager(config)
+	}
 	val rpdl = RpdlGrabber()
 	val f95 = F95ZoneGrabber()
 	
