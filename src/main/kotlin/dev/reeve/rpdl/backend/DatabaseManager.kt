@@ -7,6 +7,7 @@ import dev.reeve.rpdl.backend.f95.F95Info
 import dev.reeve.rpdl.backend.rpdl.Category
 import dev.reeve.rpdl.backend.rpdl.GameInstance
 import dev.reeve.rpdl.backend.rpdl.Uploader
+import io.github.cdimascio.dotenv.Dotenv
 import org.postgresql.Driver
 import java.io.Closeable
 import java.sql.DriverManager
@@ -18,9 +19,11 @@ class DatabaseManager : Closeable {
 		DriverManager.registerDriver(Driver())
 	}
 	
+	private val dotenv = Dotenv.load()
+	
 	private val connection = when (Settings.databaseType) {
 		Settings.DatabaseType.SQLITE -> DriverManager.getConnection("jdbc:sqlite:${Settings.databasePath}")
-		Settings.DatabaseType.POSTGRESQL -> DriverManager.getConnection("jdbc:postgresql://0.0.0.0:5672/", "postgres", "postgres")
+		Settings.DatabaseType.POSTGRESQL -> DriverManager.getConnection("jdbc:postgresql://${dotenv["POSTGRES_ADDR", "127.0.0.1"]}:5672/", "postgres", "postgres")
 	}
 	
 	fun reindex() {

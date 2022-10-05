@@ -32,6 +32,7 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation:2.1.1")
     
     implementation("dev.reeve:TorrustApiWrapper:latest")
+    implementation("io.github.cdimascio:dotenv-kotlin:6.3.1")
     
     testImplementation(kotlin("test"))
 }
