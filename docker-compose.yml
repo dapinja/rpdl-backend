@@ -5,6 +5,9 @@ services:
         build: .
         ports:
             - "5671:5671"
+        environment:
+            - PUID=1000
+            - PGID=1000
         volumes:
             - ./config:/app/config
         depends_on:

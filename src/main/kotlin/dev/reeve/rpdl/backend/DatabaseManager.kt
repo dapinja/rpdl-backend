@@ -1,6 +1,7 @@
 package dev.reeve.rpdl.backend
 
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import dev.reeve.rpdl.backend.api.ExtendedInstance
 import dev.reeve.rpdl.backend.api.SearchQuery
 import dev.reeve.rpdl.backend.f95.F95Info
@@ -25,7 +26,7 @@ class DatabaseManager : Closeable {
 	} else {
 		configFile.parentFile.mkdir()
 		Config().also {
-			configFile.writeText(Gson().toJson(it))
+			configFile.writeText(GsonBuilder().setPrettyPrinting().create().toJson(it))
 		}
 	}
 	
