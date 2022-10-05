@@ -15,7 +15,7 @@ import java.util.*
 class DatabaseManager : Closeable {
 	private val connection = when (Settings.databaseType) {
 		Settings.DatabaseType.SQLITE -> DriverManager.getConnection("jdbc:sqlite:${Settings.databasePath}")
-		Settings.DatabaseType.POSTGRESQL -> DriverManager.getConnection("jdbc:postgresql://localhost:5672/", "postgres", "postgres")
+		Settings.DatabaseType.POSTGRESQL -> DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5672/", "postgres", "postgres")
 	}
 	
 	fun reindex() {
