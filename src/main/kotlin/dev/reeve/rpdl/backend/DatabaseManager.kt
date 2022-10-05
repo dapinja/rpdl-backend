@@ -27,9 +27,9 @@ class DatabaseManager(private val config: Config) : Closeable {
 	
 	fun reindex() {
 		val statement = connection.createStatement()
-		statement.execute("REINDEX rpdlInstances_threadID;")
-		statement.execute("REINDEX rpdlInstances_categoryID;")
-		statement.execute("REINDEX rpdlInstances_uploaderID;")
+		statement.execute("REINDEX INDEX rpdlInstances_threadID;")
+		statement.execute("REINDEX INDEX rpdlInstances_categoryID;")
+		statement.execute("REINDEX INDEX rpdlInstances_uploaderID;")
 		statement.close()
 	}
 	
