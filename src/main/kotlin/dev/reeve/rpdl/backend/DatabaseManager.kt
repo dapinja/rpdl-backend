@@ -7,12 +7,17 @@ import dev.reeve.rpdl.backend.f95.F95Info
 import dev.reeve.rpdl.backend.rpdl.Category
 import dev.reeve.rpdl.backend.rpdl.GameInstance
 import dev.reeve.rpdl.backend.rpdl.Uploader
+import org.postgresql.Driver
 import java.io.Closeable
 import java.sql.DriverManager
 import java.sql.Statement
 import java.util.*
 
 class DatabaseManager : Closeable {
+	init {
+		DriverManager.registerDriver(Driver())
+	}
+	
 	private val connection = when (Settings.databaseType) {
 		Settings.DatabaseType.SQLITE -> DriverManager.getConnection("jdbc:sqlite:${Settings.databasePath}")
 		Settings.DatabaseType.POSTGRESQL -> DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5672/", "postgres", "postgres")
