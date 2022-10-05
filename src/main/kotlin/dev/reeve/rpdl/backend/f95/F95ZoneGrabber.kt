@@ -48,6 +48,7 @@ class F95ZoneGrabber {
 				return null
 			}
 		} else {
+			println("Info already exists for $threadID")
 			return inf
 		}
 		
