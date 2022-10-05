@@ -22,4 +22,4 @@ COPY --from=build /home/gradle/src/build/libs/*.jar /app/app.jar
 
 EXPOSE 5671
 
-CMD ["java", "-jar", "/app.jar"]
+CMD ["java", "-jar", "/app/app.jar"]
