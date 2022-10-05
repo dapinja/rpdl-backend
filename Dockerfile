@@ -18,7 +18,7 @@ FROM openjdk:17-alpine
 
 RUN mkdir /app
 
-COPY --from=build /home/gradle/src/build/libs /app
+COPY --from=build /home/gradle/src/build/libs/ /app/
 
 EXPOSE 5671
 
