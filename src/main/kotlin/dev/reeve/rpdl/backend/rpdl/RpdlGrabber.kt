@@ -159,8 +159,10 @@ class RpdlGrabber {
 						)
 					}
 					
+					println("Created instance $instance")
+					
 					if (instance != null) {
-						Settings.f95.downloadPage(descriptionInfo.first, updateSet)
+						Settings.f95.downloadPage(descriptionInfo.first, updateSet) ?: continue@updates
 						
 						Settings.databaseManager.putGameInstance(instance)
 						
