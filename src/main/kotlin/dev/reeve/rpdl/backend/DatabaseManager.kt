@@ -21,8 +21,9 @@ class DatabaseManager : Closeable {
 	
 	private val configFile = File("./config/config.json")
 	private val config = if (configFile.exists()) {
-		Gson().fromJson(File("config.json").readText(), Config::class.java)
+		Gson().fromJson(configFile.readText(), Config::class.java)
 	} else {
+		configFile.parentFile.mkdir()
 		Config().also {
 			configFile.writeText(Gson().toJson(it))
 		}
