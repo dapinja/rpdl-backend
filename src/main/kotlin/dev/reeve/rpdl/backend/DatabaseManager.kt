@@ -154,7 +154,7 @@ class DatabaseManager(private val config: Config) : Closeable {
 	
 	private fun getGameInstance(torrentID: Long): GameInstance? {
 		val statement = connection.createStatement()
-		val result = statement.executeQuery("SELECT * FROM rpdlInstances WHERE torrentID = $torrentID")
+		val result = statement.executeQuery("SELECT * FROM rpdlInstances WHERE torrentID = '$torrentID'")
 		if (result.next()) {
 			return GameInstance(result)
 		}
@@ -163,7 +163,7 @@ class DatabaseManager(private val config: Config) : Closeable {
 	
 	fun getGameInstances(threadID: Int): List<GameInstance> {
 		val statement = connection.createStatement()
-		val result = statement.executeQuery("SELECT * FROM rpdlInstances WHERE threadID = $threadID")
+		val result = statement.executeQuery("SELECT * FROM rpdlInstances WHERE threadID = '$threadID'")
 		val list = mutableListOf<GameInstance>()
 		while (result.next()) {
 			list.add(GameInstance(result))
