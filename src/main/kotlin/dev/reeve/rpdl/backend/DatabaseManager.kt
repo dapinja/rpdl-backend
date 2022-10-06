@@ -75,8 +75,8 @@ class DatabaseManager(private val config: Config) : Closeable {
 		val searchTermString = buildString {
 			if (searchQuery.query.isNotEmpty()) {
 				append(" (")
-				append("title LIKE '%${searchQuery.query}%' OR ")
-				append("description LIKE '%${searchQuery.query}%'")
+				append("title ILIKE '%${searchQuery.query}%' OR ")
+				append("description ILIKE '%${searchQuery.query}%'")
 				append(")")
 			}
 		}

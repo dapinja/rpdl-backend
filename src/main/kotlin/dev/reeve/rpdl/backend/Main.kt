@@ -41,8 +41,6 @@ fun main(args: Array<String>): Unit = runBlocking {
 							}
 						}
 						
-						println(response)
-						
 						call.respond(response)
 					} catch (_: NullPointerException) {
 						call.respondText("Game not found", status = HttpStatusCode.NotFound)
