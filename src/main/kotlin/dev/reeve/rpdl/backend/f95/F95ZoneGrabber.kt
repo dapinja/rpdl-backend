@@ -21,7 +21,6 @@ class F95ZoneGrabber {
 			try {
 				client.newCall(request).execute().use { response ->
 					if (!response.isSuccessful) {
-						println("Dead link: $url")
 						return null
 					}
 					

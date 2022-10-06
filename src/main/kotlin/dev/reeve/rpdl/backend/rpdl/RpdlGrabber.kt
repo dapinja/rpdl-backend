@@ -159,10 +159,13 @@ class RpdlGrabber {
 						)
 					}
 					
-					println("Created instance $instance")
-					
 					if (instance != null) {
-						Settings.f95.downloadPage(descriptionInfo.first, updateSet) ?: continue@updates
+						var ret = Settings.f95.downloadPage(descriptionInfo.first, updateSet)
+						
+						if (ret == null) {
+							println("Dead link, https://dl.rpdl.net/torrent/${instance.torrentId} - https://f95zone.to/threads/${instance.threadID} - ${instance.uploader.name}")
+							continue@updates
+						}
 						
 						Settings.databaseManager.putGameInstance(instance)
 						
