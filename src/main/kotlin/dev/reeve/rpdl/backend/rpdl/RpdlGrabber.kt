@@ -10,7 +10,7 @@ import kotlin.collections.HashSet
 import kotlin.system.measureTimeMillis
 
 class RpdlGrabber {
-	private val torrust = Torrust(Settings.Url.rpdlURL)
+	private val torrust = Torrust(Settings.Url.rpdlURL, true)
 	private val badList = HashSet<Int>()
 	
 	private fun getCategories(): List<Category> {
@@ -195,6 +195,11 @@ class RpdlGrabber {
 			Settings.databaseManager.putLastCheck(start)
 		} else {
 			println("No updates were found")
+		}
+		
+		println("Done updating, used ${torrust.calls.values.sum()} calls")
+		for (entry in torrust.calls.entries.sortedByDescending { it.value }) {
+			println("${entry.key}: ${entry.value}")
 		}
 		
 		Caches.uploaderCache.clear()
