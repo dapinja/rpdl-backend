@@ -160,7 +160,7 @@ class RpdlGrabber {
 					}
 					
 					if (instance != null) {
-						var ret = Settings.f95.downloadPage(descriptionInfo.first, updateSet)
+						val ret = Settings.f95.downloadPage(descriptionInfo.first, updateSet)
 						
 						if (ret == null) {
 							if (!badList.contains(instance.threadID!!)) {
