@@ -205,6 +205,7 @@ class RpdlGrabber {
 		for (entry in torrust.calls.entries.sortedByDescending { it.value }) {
 			println("${entry.key}: ${entry.value}")
 		}
+		torrust.calls.clear()
 		
 		Caches.uploaderCache.clear()
 		Caches.categoryCache.clear()
