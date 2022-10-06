@@ -166,8 +166,6 @@ class RpdlGrabber {
 							if (!badList.contains(instance.threadID!!)) {
 								println("Dead link = https://dl.rpdl.net/torrent/${instance.torrentId} - ${instance.uploader.name} - (${instance.links?.get("f95zone")} vs ${Settings.Url.f95URL}threads/${instance.threadID})")
 								badList.add(instance.threadID)
-							} else {
-								println("FAILED")
 							}
 							continue@updates
 						} else {
