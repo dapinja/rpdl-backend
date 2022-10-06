@@ -163,7 +163,7 @@ class RpdlGrabber {
 						var ret = Settings.f95.downloadPage(descriptionInfo.first, updateSet)
 						
 						if (ret == null) {
-							println("Dead link, https://dl.rpdl.net/torrent/${instance.torrentId} - ${instance.uploader.name} - (${instance.links?.get("f95zone")} vs ${Settings.Url.f95URL}/threads/${instance.threadID})")
+							println("Dead link, https://dl.rpdl.net/torrent/${instance.torrentId} - ${instance.uploader.name} - (${instance.links?.get("f95zone")} vs ${Settings.Url.f95URL}threads/${instance.threadID})")
 							continue@updates
 						}
 						
