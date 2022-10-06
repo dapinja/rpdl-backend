@@ -32,7 +32,7 @@ fun main(args: Array<String>): Unit = runBlocking {
 					
 					try {
 						val response = checkGames.mapNotNull {
-							val res = CheckGame(it.id, Settings.databaseManager.getGameInstance(it.id)!!.torrentId)
+							val res = CheckGame(it.id, Settings.databaseManager.getGameInstance(it.id)!!.torrentId.toLong())
 							
 							return@mapNotNull if (res.torrentId != it.torrentId) {
 								res

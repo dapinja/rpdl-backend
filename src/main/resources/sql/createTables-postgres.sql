@@ -8,15 +8,15 @@ CREATE TABLE IF NOT EXISTS f95zone
 
 CREATE TABLE IF NOT EXISTS uploaders
 (
-    id       INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY ,
+    id       INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     name     TEXT NOT NULL UNIQUE,
     lastSeen TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS categories
 (
-    id          INTEGER PRIMARY KEY,
-    name        TEXT    NOT NULL UNIQUE
+    id   INTEGER PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS rpdlInstances
@@ -27,16 +27,16 @@ CREATE TABLE IF NOT EXISTS rpdlInstances
     version    TEXT,
     fileSize   TEXT    NOT NULL,
     categoryID INTEGER NOT NULL,
-    torrentID  TEXT    NOT NULL UNIQUE,
+    torrentID  INTEGER NOT NULL UNIQUE,
     uploadDate TEXT    NOT NULL,
     uploaderID INTEGER NOT NULL,
     links      TEXT,
     CONSTRAINT threadID
-    FOREIGN KEY (threadID) REFERENCES f95zone (id),
+        FOREIGN KEY (threadID) REFERENCES f95zone (id),
     CONSTRAINT categoryID
-    FOREIGN KEY (categoryID) REFERENCES categories (id),
+        FOREIGN KEY (categoryID) REFERENCES categories (id),
     CONSTRAINT uploaderID
-    FOREIGN KEY (uploaderID) REFERENCES uploaders (id)
+        FOREIGN KEY (uploaderID) REFERENCES uploaders (id)
 );
 
 CREATE TABLE IF NOT EXISTS data
@@ -45,7 +45,8 @@ CREATE TABLE IF NOT EXISTS data
     value TEXT
 );
 
-INSERT INTO data (name, value) VALUES ('lastUpdate', '0');
+INSERT INTO data (name, value)
+VALUES ('lastUpdate', '0');
 
 CREATE INDEX IF NOT EXISTS rpdlInstances_threadID ON rpdlInstances (threadID);
 CREATE INDEX IF NOT EXISTS rpdlInstances_categoryID ON rpdlInstances (categoryID);

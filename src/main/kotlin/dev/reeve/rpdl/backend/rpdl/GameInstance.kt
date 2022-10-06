@@ -12,7 +12,7 @@ open class GameInstance(
 	val version: String?,
 	val fileSize: Long,
 	val category: Category,
-	val torrentId: Long,
+	val torrentId: Int,
 	val uploadedDate: Long,
 	val uploader: Uploader,
 	val links: HashMap<String, String>?
@@ -32,7 +32,7 @@ open class GameInstance(
 		result.getInt("categoryID").let {
 			return@let Caches.categoryCache.get()[it]
 		}!!,
-		result.getString("torrentID").toLong(),
+		result.getInt("torrentID"),
 		result.getString("uploadDate").toLong(),
 		result.getInt("uploaderID").let { id ->
 			return@let Caches.uploaderCache.get().find { it.id == id }
@@ -43,7 +43,7 @@ open class GameInstance(
 	)
 	
 	override fun toString(): String {
-		return "${if (id != null) "$id, " else ""}${threadID ?: -1}, '$title', '$version', '$fileSize', ${category.id}, '$torrentId', '$uploadedDate', ${uploader.id}, '${
+		return "${if (id != null) "$id, " else ""}${threadID ?: -1}, '$title', '$version', '$fileSize', ${category.id}, $torrentId, '$uploadedDate', ${uploader.id}, '${
 			Gson().toJson(
 				links
 			)
@@ -51,7 +51,7 @@ open class GameInstance(
 	}
 	
 	fun update(): String {
-		return "threadID = $threadID, title = '$title', version = '$version', fileSize = '$fileSize', categoryID = ${category.id}, torrentID = '$torrentId', uploadDate = '$uploadedDate', uploaderID = ${uploader.id}, links = '${
+		return "threadID = $threadID, title = '$title', version = '$version', fileSize = '$fileSize', categoryID = ${category.id}, torrentID = $torrentId, uploadDate = '$uploadedDate', uploaderID = ${uploader.id}, links = '${
 			Gson().toJson(
 				links
 			)

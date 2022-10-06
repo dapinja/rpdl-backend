@@ -76,6 +76,7 @@ class DatabaseManager(private val config: Config) : Closeable {
 			if (searchQuery.query.isNotEmpty()) {
 				append(" (")
 				append("title ILIKE '%${searchQuery.query}%' OR ")
+				append("description ILIKE '%${searchQuery.query.replace(" ", "")}%' OR ")
 				append("description ILIKE '%${searchQuery.query}%'")
 				append(")")
 			}

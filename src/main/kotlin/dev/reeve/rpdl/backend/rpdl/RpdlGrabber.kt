@@ -66,7 +66,7 @@ class RpdlGrabber {
 					}
 					
 					val copy = games.filter {
-						it.value.torrentId == webListing.torrentId
+						it.value.torrentId == webListing.torrentId.toInt()
 					}
 					
 					if (copy.isNotEmpty()) {
@@ -80,11 +80,11 @@ class RpdlGrabber {
 					
 					val time = measureTimeMillis {
 						result = games.filter { (id, gameInstance) ->
-							if (found.containsKey(descriptionInfo.first) && found[descriptionInfo.first]!!.contains(gameInstance.torrentId)) {
+							if (found.containsKey(descriptionInfo.first) && found[descriptionInfo.first]!!.contains(gameInstance.torrentId.toLong())) {
 								return@filter false
 							}
 							
-							val res = torrust.getWebListing(gameInstance.torrentId)
+							val res = torrust.getWebListing(gameInstance.torrentId.toLong())
 							
 							if (res != null) {
 								found.getOrPut(descriptionInfo.first) { HashSet() }.add(res.torrentId)
@@ -132,7 +132,6 @@ class RpdlGrabber {
 						println("Error updating $webListing")
 						null
 					} else if (result.size == 1) {
-						println("Update ${result.first().title} to $version")
 						GameInstance(
 							result.first().id, // xwy id
 							descriptionInfo.first, // threadID
@@ -140,13 +139,12 @@ class RpdlGrabber {
 							version,
 							webListing.fileSize.toLong(),
 							Caches.categoryCache.get()[webListing.categoryId]!!,
-							webListing.torrentId,
+							webListing.torrentId.toInt(),
 							webListing.uploadDate,
 							uploader,
 							descriptionInfo.second // links
 						)
 					} else {
-						println("Add ${webListing.title} with torrentID ${webListing.torrentId}")
 						GameInstance(
 							null, // don't have an ID assigned yet
 							descriptionInfo.first, // threadID
@@ -154,7 +152,7 @@ class RpdlGrabber {
 							version,
 							webListing.fileSize.toLong(),
 							Caches.categoryCache.get()[webListing.categoryId]!!,
-							webListing.torrentId,
+							webListing.torrentId.toInt(),
 							webListing.uploadDate,
 							uploader,
 							descriptionInfo.second // links
@@ -166,12 +164,18 @@ class RpdlGrabber {
 						
 						if (ret == null) {
 							if (!badList.contains(instance.threadID!!)) {
-								println("Dead link, https://dl.rpdl.net/torrent/${instance.torrentId} - ${instance.uploader.name} - (${instance.links?.get("f95zone")} vs ${Settings.Url.f95URL}threads/${instance.threadID})")
+								println("Dead link = https://dl.rpdl.net/torrent/${instance.torrentId} - ${instance.uploader.name} - (${instance.links?.get("f95zone")} vs ${Settings.Url.f95URL}threads/${instance.threadID})")
 								badList.add(instance.threadID)
 							} else {
 								println("FAILED")
 							}
 							continue@updates
+						} else {
+							if (result.size == 1) {
+								println("Update ${result.first().title} to $version")
+							} else if (result.isEmpty()) {
+								println("Add ${webListing.title} with torrentID ${webListing.torrentId}")
+							}
 						}
 						
 						Settings.databaseManager.putGameInstance(instance)
