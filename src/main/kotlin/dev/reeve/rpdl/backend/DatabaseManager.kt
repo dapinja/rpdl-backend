@@ -313,7 +313,7 @@ class DatabaseManager(private val config: Config) : Closeable {
 		} else {
 			val statement = connection.createStatement()
 			statement.execute(
-				"INSERT INTO rpdlInstances VALUES ($instance) ON CONFLICT (id) DO UPDATE SET ${instance.update()}"
+				"UPDATE rpdlInstances SET ${instance.update()} WHERE id = ${instance.id}"
 			)
 			
 			return instance.id
