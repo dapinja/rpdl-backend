@@ -224,7 +224,7 @@ class RpdlGrabber {
 		}
 		
 		val f95Url = links.getOrDefault("f95zone", "")
-		val threadID = Settings.RegExp.threadID.find(f95Url)?.groupValues?.get(0)?.replace("/", "")?.toIntOrNull()
+		val threadID = Settings.RegExp.threadID.find(f95Url)?.groupValues?.get(0)?.toIntOrNull()
 		
 		if (threadID == null) {
 			if (f95Url != "" && f95Url.indexOf("/search/") != -1) {

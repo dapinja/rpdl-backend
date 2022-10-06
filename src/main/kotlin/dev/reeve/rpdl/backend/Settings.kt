@@ -39,7 +39,7 @@ object Settings {
 		val rating = Regex("""ratingValue": "(?<data>[\d.]+)"""")
 		
 		val markdown = Regex("""(?<=\[(?<linkName>.{1,30})\] ?\()(?<link>[^\n\r)]+)""")
-		val threadID = Regex("""\d+/?${'$'}""")
+		val threadID = Regex("""(?<=[./])\d+(?=/|${'$'})""")
 		val searchID = Regex("""(?<=/)\d+(?=/)""")
 		
 		val link = Regex("""<a href="([^"]*)">""")
