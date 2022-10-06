@@ -6,10 +6,12 @@ import com.google.gson.Gson
 import dev.reeve.torrustapi.Torrust
 import kotlinx.coroutines.runBlocking
 import java.util.*
+import kotlin.collections.HashSet
 import kotlin.system.measureTimeMillis
 
 class RpdlGrabber {
 	private val torrust = Torrust(Settings.Url.rpdlURL)
+	private val badList = HashSet<Int>()
 	
 	private fun getCategories(): List<Category> {
 		return torrust.getCategories()?.map {
@@ -163,7 +165,10 @@ class RpdlGrabber {
 						var ret = Settings.f95.downloadPage(descriptionInfo.first, updateSet)
 						
 						if (ret == null) {
-							println("Dead link, https://dl.rpdl.net/torrent/${instance.torrentId} - ${instance.uploader.name} - (${instance.links?.get("f95zone")} vs ${Settings.Url.f95URL}threads/${instance.threadID})")
+							if (!badList.contains(instance.threadID!!)) {
+								println("Dead link, https://dl.rpdl.net/torrent/${instance.torrentId} - ${instance.uploader.name} - (${instance.links?.get("f95zone")} vs ${Settings.Url.f95URL}threads/${instance.threadID})")
+								badList.add(instance.threadID)
+							}
 							continue@updates
 						}
 						
