@@ -57,7 +57,7 @@ fun main(args: Array<String>): Unit = runBlocking {
 				
 				get("/getGameInfo") {
 					val gameId = call.request.queryParameters["game"]?.toIntOrNull() ?: return@get call.respondText("Game arg not found", status = HttpStatusCode.NotFound)
-					val info = Settings.databaseManager.getGameInstance(gameId) ?: return@get call.respondText("Game not found", status = HttpStatusCode.NotFound)
+					val info = Settings.databaseManager.getGameInstance(gameId) ?: return@get call.respondText("Game not found: $gameId", status = HttpStatusCode.NotFound)
 					call.respond(info)
 				}
 				
@@ -70,7 +70,7 @@ fun main(args: Array<String>): Unit = runBlocking {
 				
 				get("/getFullGameInfo") {
 					val gameId = call.request.queryParameters["game"]?.toIntOrNull() ?: return@get call.respondText("Game arg not found", status = HttpStatusCode.NotFound)
-					val info = Settings.databaseManager.getExtendedGameInstance(gameId) ?: return@get call.respondText("Game not found", status = HttpStatusCode.NotFound)
+					val info = Settings.databaseManager.getExtendedGameInstance(gameId) ?: return@get call.respondText("Game not found: $gameId", status = HttpStatusCode.NotFound)
 					call.respond(info)
 				}
 				
