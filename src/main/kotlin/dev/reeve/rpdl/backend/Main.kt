@@ -17,6 +17,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
 fun main(args: Array<String>): Unit = runBlocking {
+	val updateFrequency = 60 * 15
+
 	coroutineScope {
 		embeddedServer(Netty, port = 5671) {
 			install(ContentNegotiation) {
@@ -53,21 +55,28 @@ fun main(args: Array<String>): Unit = runBlocking {
 					call.respond(Settings.databaseManager.search(searchQuery))
 				}
 				
-				get("/getF95Info") {
-					val game = call.request.queryParameters["game"]?.toIntOrNull() ?: return@get call.respondText("Game arg not found", status = HttpStatusCode.NotFound)
-					
-					val id = Settings.databaseManager.getGameInstance(game)?.threadID ?: return@get call.respondText("Game not found", status = HttpStatusCode.NotFound)
+				get("/getGameInfo") {
+					val gameId = call.request.queryParameters["game"]?.toIntOrNull() ?: return@get call.respondText("Game arg not found", status = HttpStatusCode.NotFound)
+					val info = Settings.databaseManager.getGameInstance(gameId) ?: return@get call.respondText("Game not found", status = HttpStatusCode.NotFound)
+					call.respond(info)
+				}
 				
-					val info = Settings.databaseManager.getF95Info(id) ?: return@get call.respondText("Info not found", status = HttpStatusCode.NotFound)
+				get("/getF95Info") {
+					val threadId = call.request.queryParameters["thread"]?.toIntOrNull() ?: return@get call.respondText("Thread arg not found", status = HttpStatusCode.NotFound)
+					val info = Settings.databaseManager.getF95Info(threadId) ?: return@get call.respondText("Info not found", status = HttpStatusCode.NotFound)
 					
 					call.respond(info)
+				}
+				
+				get("/updateCheckFrequency") {
+					call.respond(updateFrequency)
 				}
 			}
 		}.start(false)
 		
 		while (true) {
 			Settings.rpdl.checkForUpdates()
-			delay(1000 * 60 * 15) // 15 minutes
+			delay(1000L * updateFrequency) // 15 minutes
 		}
 	}
 }

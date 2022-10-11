@@ -7,7 +7,7 @@ import java.sql.ResultSet
 
 open class GameInstance(
 	var id: Int?,
-	val threadID: Int?,
+	val threadId: Int?,
 	val title: String,
 	val version: String?,
 	val fileSize: Long,
@@ -43,7 +43,7 @@ open class GameInstance(
 	)
 	
 	override fun toString(): String {
-		return "${if (id != null) "$id, " else ""}${threadID ?: -1}, '$title', '$version', '$fileSize', ${category.id}, $torrentId, '$uploadedDate', ${uploader.id}, '${
+		return "${if (id != null) "$id, " else ""}${threadId ?: -1}, '$title', '$version', '$fileSize', ${category.id}, $torrentId, '$uploadedDate', ${uploader.id}, '${
 			Gson().toJson(
 				links
 			)
@@ -51,7 +51,7 @@ open class GameInstance(
 	}
 	
 	fun update(): String {
-		return "threadID = $threadID, title = '$title', version = '$version', fileSize = '$fileSize', categoryID = ${category.id}, torrentID = $torrentId, uploadDate = '$uploadedDate', uploaderID = ${uploader.id}, links = '${
+		return "threadID = $threadId, title = '$title', version = '$version', fileSize = '$fileSize', categoryID = ${category.id}, torrentID = $torrentId, uploadDate = '$uploadedDate', uploaderID = ${uploader.id}, links = '${
 			Gson().toJson(
 				links
 			)

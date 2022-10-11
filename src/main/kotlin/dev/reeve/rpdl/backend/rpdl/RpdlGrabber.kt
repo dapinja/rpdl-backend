@@ -62,7 +62,7 @@ class RpdlGrabber {
 					val descriptionInfo = getDataFromDescription(webListing.description, webListing.torrentId) ?: continue@updates
 					
 					val games = instances.filter {
-						it.value.threadID == descriptionInfo.first
+						it.value.threadId == descriptionInfo.first
 					}
 					
 					val copy = games.filter {
@@ -163,9 +163,9 @@ class RpdlGrabber {
 						val ret = Settings.f95.downloadPage(descriptionInfo.first, updateSet)
 						
 						if (ret == null) {
-							if (!badList.contains(instance.threadID!!)) {
-								println("Dead link = https://dl.rpdl.net/torrent/${instance.torrentId} - ${instance.uploader.name} - (${instance.links?.get("f95zone")} vs ${Settings.Url.f95URL}threads/${instance.threadID})")
-								badList.add(instance.threadID)
+							if (!badList.contains(instance.threadId!!)) {
+								println("Dead link = https://dl.rpdl.net/torrent/${instance.torrentId} - ${instance.uploader.name} - (${instance.links?.get("f95zone")} vs ${Settings.Url.f95URL}threads/${instance.threadId})")
+								badList.add(instance.threadId)
 							}
 							continue@updates
 						} else {
