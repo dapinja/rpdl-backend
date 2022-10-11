@@ -182,6 +182,15 @@ class DatabaseManager(private val config: Config) : Closeable {
 		return list
 	}
 	
+	fun getExtendedGameInstance(id: Int): ExtendedInstance? {
+		val statement = connection.createStatement()
+		val result = statement.executeQuery("SELECT rpdl.id as id, threadID, title, version, fileSize, categoryID, torrentID, uploadDate, uploaderID, links, tags, rating, description FROM rpdlInstances rpdl JOIN f95zone f95 ON rpdl.threadID = f95.id WHERE rpdl.id = $id")
+		if (result.next()) {
+			return ExtendedInstance(result)
+		}
+		return null
+	}
+	
 	fun getCategory(categoryID: Int): Category? {
 		val statement = connection.createStatement()
 		val result = statement.executeQuery("SELECT * FROM categories WHERE id = $categoryID")
