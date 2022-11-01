@@ -34,7 +34,7 @@ fun main(args: Array<String>): Unit = runBlocking {
 					
 					try {
 						val response = checkGames.mapNotNull {
-							val res = CheckGame(it.id, Settings.databaseManager.getGameInstance(it.id)!!.torrentId.toLong())
+							val res = CheckGame(it.id, Settings.databaseManager.getGameInstance(it.id)?.torrentId?.toLong() ?: throw GameNotFoundException(it.id))
 							
 							return@mapNotNull if (res.torrentId != it.torrentId) {
 								res
@@ -44,8 +44,8 @@ fun main(args: Array<String>): Unit = runBlocking {
 						}
 						
 						call.respond(response)
-					} catch (_: NullPointerException) {
-						call.respondText("Game not found", status = HttpStatusCode.NotFound)
+					} catch (e: GameNotFoundException) {
+						call.respondText("Game not found: ${e.id}", status = HttpStatusCode.NotFound)
 					}
 				}
 				
