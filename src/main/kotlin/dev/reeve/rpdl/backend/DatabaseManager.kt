@@ -75,9 +75,20 @@ class DatabaseManager(private val config: Config) : Closeable {
 		val searchTermString = buildString {
 			if (searchQuery.query.isNotEmpty()) {
 				append(" (")
-				append("title ILIKE '%${searchQuery.query.replace(" ", "")}%' OR ")
-				append("description ILIKE '%${searchQuery.query.replace(" ", "")}%' OR ")
-				append("description ILIKE '%${searchQuery.query}%'")
+				append("title ILIKE '")
+				if (!searchQuery.exact) {
+					append("%")
+				}
+				append(searchQuery.query.replace(" ", ""))
+				if (!searchQuery.exact) {
+					append("%")
+				}
+				append("'")
+				if (!searchQuery.exact) {
+					append(" OR ")
+					append("description ILIKE '%${searchQuery.query.replace(" ", "")}%' OR ")
+					append("description ILIKE '%${searchQuery.query}%'")
+				}
 				append(")")
 			}
 		}

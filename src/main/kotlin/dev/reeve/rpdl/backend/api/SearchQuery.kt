@@ -6,6 +6,7 @@ data class SearchQuery(
 	var andTags: List<String>,
 	var orTags: List<String>,
 	var notTags: List<String>,
+	var exact: Boolean
 ) {
 	fun serializeInputs() {
 		val clean = Regex("[^a-zA-Z0-9-. ]");
