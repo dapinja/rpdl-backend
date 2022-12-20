@@ -62,11 +62,11 @@ class RpdlGrabber {
 					val descriptionInfo = getDataFromDescription(webListing.description, webListing.torrentId) ?: continue@updates
 					
 					val games = instances.filter {
-						it.value.threadId == descriptionInfo.first
+						it.value.threadId == descriptionInfo.first || it.value.torrentId == webListing.torrentId
 					}
 					
 					val copy = games.filter {
-						it.value.torrentId == webListing.torrentId.toInt()
+						it.value.torrentId == webListing.torrentId && it.value.threadId == descriptionInfo.first
 					}
 					
 					if (copy.isNotEmpty()) {
@@ -76,7 +76,7 @@ class RpdlGrabber {
 					if (games.size > 1) {
 						println("Multiple games found for ${descriptionInfo.first}, looking...")
 					}
-					val result: List<GameInstance>
+					val result: MutableList<GameInstance>
 					
 					val time = measureTimeMillis {
 						result = games.filter { (id, gameInstance) ->
@@ -91,7 +91,7 @@ class RpdlGrabber {
 							}
 							
 							return@filter res == null
-						}.map { it.value }
+						}.map { it.value }.toMutableList()
 					}
 					
 					if (games.size > 1) {
@@ -128,8 +128,25 @@ class RpdlGrabber {
 						Caches.uploaderCache.get().add(uploader)
 					}
 					
+					if (result.size > 1) {
+						println("Multiple games found for ${descriptionInfo.first}, looking for issues...")
+						
+						if (result.all {
+							return@all torrust.getWebListing(it.torrentId) == null
+						}) {
+							println("All games are missing, removing all...")
+							result.forEach {
+								Settings.databaseManager.removeGameInstance(it)
+								Caches.instanceCache.get().remove(it.id)
+							}
+							result.clear()
+						}
+					}
+					
 					val instance = if (result.size > 1) {
-						println("Error updating $webListing")
+						println("Error updating ${webListing.toString().replace('\n', ' ')}")
+						println("Multiple possible options: ${result.joinToString("\n", prefix = "\n", postfix = "\n------------------------") { it.toString().replace('\n', ' ')}}")
+						
 						null
 					} else if (result.size == 1) {
 						GameInstance(
@@ -139,7 +156,7 @@ class RpdlGrabber {
 							version,
 							webListing.fileSize.toLong(),
 							Caches.categoryCache.get()[webListing.categoryId]!!,
-							webListing.torrentId.toInt(),
+							webListing.torrentId,
 							webListing.uploadDate,
 							uploader,
 							descriptionInfo.second // links
@@ -152,7 +169,7 @@ class RpdlGrabber {
 							version,
 							webListing.fileSize.toLong(),
 							Caches.categoryCache.get()[webListing.categoryId]!!,
-							webListing.torrentId.toInt(),
+							webListing.torrentId,
 							webListing.uploadDate,
 							uploader,
 							descriptionInfo.second // links

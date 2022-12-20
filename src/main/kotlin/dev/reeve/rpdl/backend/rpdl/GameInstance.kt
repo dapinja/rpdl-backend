@@ -12,7 +12,7 @@ open class GameInstance(
 	val version: String?,
 	val fileSize: Long,
 	val category: Category,
-	val torrentId: Int,
+	val torrentId: Long,
 	val uploadedDate: Long,
 	val uploader: Uploader,
 	val links: HashMap<String, String>?
@@ -32,7 +32,7 @@ open class GameInstance(
 		result.getInt("categoryID").let {
 			return@let Caches.categoryCache.get()[it]
 		}!!,
-		result.getInt("torrentID"),
+		result.getLong("torrentID"),
 		result.getString("uploadDate").toLong(),
 		result.getInt("uploaderID").let { id ->
 			return@let Caches.uploaderCache.get().find { it.id == id }

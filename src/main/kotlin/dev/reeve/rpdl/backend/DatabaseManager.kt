@@ -16,13 +16,18 @@ import java.sql.Statement
 import java.util.*
 
 class DatabaseManager(private val config: Config) : Closeable {
+	
+	private val postgresConnectionString = "jdbc:postgresql://${config.postgresAddress}:${config.port}/"
+	private val sqLiteConnectionString = "jdbc:sqlite:${config.databasePath}"
+	
 	init {
 		DriverManager.registerDriver(Driver())
+		println(postgresConnectionString)
 	}
 	
 	private val connection = when (Settings.databaseType) {
-		Settings.DatabaseType.SQLITE -> DriverManager.getConnection("jdbc:sqlite:${config.databasePath}")
-		Settings.DatabaseType.POSTGRESQL -> DriverManager.getConnection("jdbc:postgresql://${config.postgresAddress}:${config.port}/", "postgres", "postgres")
+		Settings.DatabaseType.SQLITE -> DriverManager.getConnection(sqLiteConnectionString)
+		Settings.DatabaseType.POSTGRESQL -> DriverManager.getConnection(postgresConnectionString, "postgres", "postgres")
 	}
 	
 	fun reindex() {
@@ -339,6 +344,11 @@ class DatabaseManager(private val config: Config) : Closeable {
 			
 			return instance.id
 		}
+	}
+	
+	fun removeGameInstance(instance: GameInstance) {
+		val statement = connection.createStatement()
+		statement.execute("DELETE FROM rpdlInstances WHERE id = ${instance.id}")
 	}
 	
 	override fun close() {
